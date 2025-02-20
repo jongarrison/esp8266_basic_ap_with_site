@@ -13,14 +13,16 @@
 
 #include <SimpleTimer.h>
 #include "pages.h"
+#include <Arduino.h>
 
 #define REDLED 0
 #define BLUELED 2
 #define LED_ON LOW
 #define LED_OFF HIGH
+#define VBATPIN A0
 
-const char *softAP_ssid = "jgwoah";;
-const char *softAP_password = "password";
+const char *softAP_ssid = "HuzzahWIFI";
+const char *softAP_password = "password"; //No, this is not a critical password at all
 
 /* Soft AP network parameters */
 IPAddress local_ip(192,168,1,1);
@@ -32,6 +34,15 @@ ESP8266WebServer server(80);
 String webString = "";     // String to display
 bool isLightOn = false;
 SimpleTimer timer;
+
+float batteryLevel(){
+    float measuredvbat = analogRead(VBATPIN);
+    measuredvbat *= 2;    // we divided by 2, so multiply back
+    measuredvbat *= 3.3;  // Multiply by 3.3V, our reference voltage
+    measuredvbat /= 1024; // convert to voltage
+    Serial.print("VBat: " ); Serial.println(measuredvbat);
+    return measuredvbat;
+}
 
 void logRequest() {
     // Get request details    
@@ -64,7 +75,7 @@ void handle_state(){
     Serial.println("state request RCVD"); 
     StaticJsonDocument<300> JSONData;
     // Use the object just like a javascript object or a python dictionary
-    JSONData["batt"] = "0.5";
+    JSONData["batt"] = batteryLevel();
     JSONData["light"] = isLightOn;
     // You can add more fields
     char data[300];

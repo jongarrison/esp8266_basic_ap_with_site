@@ -15,7 +15,7 @@ return R"---(
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     console.log("Response: " + xhr.responseText);
                     var response = JSON.parse(xhr.responseText);
-                    document.getElementById("light").innerHTML = (response.light == "true") ? "Yes" : "No";
+                    document.getElementById("light").innerHTML = (response.light) ? "Yes" : "No";
                     document.getElementById("batt").innerHTML = response.batt;
                 }
             };
@@ -39,8 +39,8 @@ return R"---(
 
 <div>
     <h2>Actions</h2>
-    <button onclick="fetch('/lighton', {method: 'GET'})">Turn light on</button>
-    <button onclick="fetch('/lightoff', {method: 'GET'})">Turn light off</button>
+    <button onclick="fetch('/lighton', {method: 'GET'}).then(() => updateValues())">Turn light on</button>
+    <button onclick="fetch('/lightoff', {method: 'GET'}).then(() => updateValues())">Turn light off</button>
 </div>
 
 
