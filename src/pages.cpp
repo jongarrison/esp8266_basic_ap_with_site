@@ -9,22 +9,14 @@ return R"---(
     <title>KduPro</title>
     <script type="text/javascript">
         function updateValues() {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/state", true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    console.log("Response: " + xhr.responseText);
-                    var response = JSON.parse(xhr.responseText);
-                    document.getElementById("light").innerHTML = (response.light) ? "Yes" : "No";
-                    document.getElementById("batt").innerHTML = response.batt;
-                }
-            };
-            xhr.send();
+            fetch('/state', {method: 'GET'})
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("light").innerHTML = data.light ? "Yes" : "No";
+                    document.getElementById("batt").innerHTML = data.batt;
+                });
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            updateValues();
-        });
+        document.addEventListener("DOMContentLoaded", updateValues);
     </script>
 </head>
 <body>
@@ -33,14 +25,13 @@ return R"---(
 <div>
     <h2>Values</h2>
     <p>Is light on: <span id="light">loading...</span></p>
-
     <p>Battery: <span id="batt">loading...</span></p>
 </div>
 
 <div>
     <h2>Actions</h2>
-    <button onclick="fetch('/lighton', {method: 'GET'}).then(() => updateValues())">Turn light on</button>
-    <button onclick="fetch('/lightoff', {method: 'GET'}).then(() => updateValues())">Turn light off</button>
+    <button onclick="fetch('/lighton', {method: 'GET'}).then(updateValues)">Turn light on</button>
+    <button onclick="fetch('/lightoff', {method: 'GET'}).then(updateValues)">Turn light off</button>
 </div>
 
 

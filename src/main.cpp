@@ -19,7 +19,8 @@
 #define BLUELED 2
 #define LED_ON LOW
 #define LED_OFF HIGH
-#define VBATPIN A0
+#define VBATPIN A0 
+//AO requires an external voltage divider to measure battery voltage, this code is still here for reference
 
 const char *softAP_ssid = "HuzzahWIFI";
 const char *softAP_password = "password"; //No, this is not a critical password at all
